@@ -9,3 +9,7 @@ O projeto em si, é um site para exposição de bandeira de alguns paises com in
 O site está todo em <font color=red> inglês </font> por conta do site fornecedor do desafio. <strong>Porém</strong>, todo o codigo fonte foi feito por este que vos fala.
 #
 ### Bjs 😘️❤️
+##
+<div align="center">
+  <img alt="ko4la" src="https://media.tenor.com/FTZx57BugI4AAAAC/koala-sleeping.gif" width="90">
+</div>
