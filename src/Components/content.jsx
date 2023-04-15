@@ -12,7 +12,7 @@ export default function Content({valIsDarkMode}) {
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
   
   useEffect(() => {
-    fetch("data.json")
+    fetch("./data.json")
       .then(resp => resp.json())
       .then(resp => { setData(resp); setData1(resp) })
   }, []);

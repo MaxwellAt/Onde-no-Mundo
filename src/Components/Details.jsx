@@ -15,7 +15,7 @@ export default function Details({valIsDarkMode}) {
     const [borders, setBorders] = useState()
 
     useEffect(() => {
-        fetch("../data.json")
+        fetch("./data.json")
             .then(resp => resp.json())
             .then(resp => {
                 const data = resp.filter(country => country.name === Name);
