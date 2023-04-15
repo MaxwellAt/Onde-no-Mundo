@@ -1,0 +1,57 @@
+@charset "utf-8";
+@import "../node_modules/bulma/bulma.sass";
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600;800&display=swap');
+
+
+// // Default variable overrides
+$success:grey;
+$tag-delete-margin:0px;
+$primary:hsl(200, 15%, 8%);
+$secondary:hsl(0, 0%, 98%);
+
+:root{
+    --color-text:hsl(200, 15%, 8%);
+    --body:hsl(0, 0%, 98%);
+    --elements: hsl(0, 0%, 100%);
+}
+body {
+    font-family: 'Nunito Sans', sans-serif !important;
+    font-size: 14px !important;
+    color: hsl(200, 15%, 8%) !important;
+    background-color: var(--body) !important;
+}
+h1 * ,h2 *,h3 *,h4 *,h5 *,h6 *{
+    font-weight: 800 !important;
+    font-family: 'Nunito Sans', sans-serif !important;
+}
+p,strong,button,#text,.my-table{
+    font-family: 'Nunito Sans', sans-serif !important;
+    color: var(--color-text) !important;
+}
+.container-fluid{
+    padding: 0vw 4vw !important;
+}
+a{
+    text-decoration:none !important;
+}
+.input.dark{
+    background-color:$primary;
+    color:$secondary;
+}
+.input.dark::placeholder{
+    color:$secondary;
+}
+.my-table{
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+@media screen and (max-width: 768px){
+    .my-table{
+        width:100% !important;
+    }
+}
+
+// Required
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
