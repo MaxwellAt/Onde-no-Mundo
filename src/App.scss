@@ -1,7 +1,7 @@
 @charset "utf-8";
 @import "../node_modules/bulma/bulma.sass";
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600;800&display=swap');
-
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
 
 // // Default variable overrides
 $success:grey;
@@ -53,5 +53,3 @@ a{
     }
 }
 
-// Required
-@import "../node_modules/bootstrap/scss/bootstrap.scss";

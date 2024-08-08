@@ -94,8 +94,8 @@ export default function Content({valIsDarkMode}) {
             <CardImg src={item.flags.png} alt={item.name} />
             <CardBody>
               <CardTitle>
-                <h1 className="is-white is-medium">
-                  <NavLink className={`link-${valIsDarkMode?"secondary":"primary"}`} to={`/${item.name}/`}>{item.name}</NavLink>
+                <h1 className={`text-${valIsDarkMode ? "white" : "black"} h4`}>
+                  <NavLink className={`${valIsDarkMode ? "text-white" : "text-black"}`} to={`/${item.name}/`}>{item.name}</NavLink>
                 </h1>
               </CardTitle>
               <CardText>

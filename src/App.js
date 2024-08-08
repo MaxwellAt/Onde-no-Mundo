@@ -1,10 +1,9 @@
-import './App.css';
 import { useState, createContext } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import Content from './Components/content';
 import Details from './Components/Details';
 import HdrBar from './Components/hdrBar';
-
+import "./App.scss";
 
 
 function App() {
