@@ -1,32 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Card, CardImg, CardBody, CardTitle, CardText } from "reactstrap";
 import { NavLink } from "react-router-dom";
+import { useCountries } from "../hooks/useCountries";
 
 export default function Content({valIsDarkMode}) {
-  const [data1, setData1] = useState([]);
-  const [data, setData] = useState([]);
+  const { countries, loading, error } = useCountries();
+  const [query, setQuery] = useState("");
+  const [region, setRegion] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [title, setTitle] = useState("Filter By Region");
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-  
-  useEffect(() => {
-    fetch("./data.json")
-      .then(resp => resp.json())
-      .then(resp => { setData(resp); setData1(resp) })
-  }, []);
-  
-  const handleSearchInputChange = (event, param1) => {
-    if (event.target.value || event.target.textContent) {
-      setData(data1)
-      let b = event.target.value ? event.target.value[0].toUpperCase() + event.target.value.substring(1) : event.target.textContent
-      let nwArray = data.filter((a) => param1 ? a.region.includes(b) : a.name.includes(b))
-      nwArray.length !== 0 ? setData(nwArray) : console.log('nothing')
-    } else {
-      setData(data1)
-    }
-  };
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return countries.filter((c) => {
+      const matchRegion = region ? c.region === region : true;
+      const matchQuery = q ? c.name.toLowerCase().includes(q) : true;
+      return matchRegion && matchQuery;
+    });
+  }, [countries, query, region]);
 
 
   const caixadeInput = (
@@ -34,7 +28,8 @@ export default function Content({valIsDarkMode}) {
       <div className="control has-icons-left flex-grow">
         <input
           className={`input ${valIsDarkMode ? "dark" : ""}`}
-          onChange={handleSearchInputChange}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           type="text"
           placeholder="Search for a country..."
         />
@@ -53,32 +48,32 @@ export default function Content({valIsDarkMode}) {
       <DropdownMenu dark={valIsDarkMode}>
         <DropdownItem
           onClick={() => {
-            setData(data1)
+            setRegion("");
             setTitle("Filter By Region")
           }}>Filter By Region</DropdownItem>
         <DropdownItem
-          onClick={(event) => {
-            handleSearchInputChange(event, true)
+          onClick={() => {
+            setRegion("Africa");
             setTitle("Africa")
           }}>Africa</DropdownItem>
         <DropdownItem
-          onClick={(event) => {
-            handleSearchInputChange(event, true)
+          onClick={() => {
+            setRegion("Americas");
             setTitle("Americas")
           }}>Americas</DropdownItem>
         <DropdownItem
-          onClick={(event) => {
-            handleSearchInputChange(event, true)
+          onClick={() => {
+            setRegion("Asia");
             setTitle("Asia")
           }}>Asia</DropdownItem>
         <DropdownItem
-          onClick={(event) => {
-            handleSearchInputChange(event, true)
+          onClick={() => {
+            setRegion("Europe");
             setTitle("Europe")
           }}>Europe</DropdownItem>
         <DropdownItem
-          onClick={(event) => {
-            handleSearchInputChange(event, true)
+          onClick={() => {
+            setRegion("Oceania");
             setTitle("Oceania")
           }}>Oceania</DropdownItem>
       </DropdownMenu>
@@ -88,18 +83,23 @@ export default function Content({valIsDarkMode}) {
 
   const Conteudo = (
     <div className="row">
-      {data.map((item, index) => (
-        <div className="col-md-3 mb-3" key={index}>
+      {filtered.map((item, index) => (
+        <div className="col-md-3 mb-3" key={item.alpha3Code || item.name || index}>
           <Card color={valIsDarkMode?"dark":"light"} >
             <CardImg src={item.flags.png} alt={item.name} />
             <CardBody>
               <CardTitle>
                 <h1 className={`text-${valIsDarkMode ? "white" : "black"} h4`}>
-                  <NavLink className={`${valIsDarkMode ? "text-white" : "text-black"}`} to={`/${item.name}/`}>{item.name}</NavLink>
+                  <NavLink
+                    className={`${valIsDarkMode ? "text-white" : "text-black"}`}
+                    to={`/${encodeURIComponent(item.name)}`}
+                  >
+                    {item.name}
+                  </NavLink>
                 </h1>
               </CardTitle>
               <CardText>
-                <strong>Population: </strong>{item.population}
+                <strong>Population: </strong>{(item.population || 0).toLocaleString('pt-BR', { useGrouping: true })}
                 <br />
                 <strong>Region: </strong>{item.region}
                 <br />
@@ -120,7 +120,17 @@ export default function Content({valIsDarkMode}) {
         {caixadeInput}
         {dropDown}
       </div>
-      {Conteudo}
+      {loading ? (
+        <div className={`text-${valIsDarkMode ? "white" : "black"}`}>
+          Carregando países…
+        </div>
+      ) : error ? (
+        <div className={`text-${valIsDarkMode ? "white" : "black"}`}>
+          Não foi possível carregar os países no momento.
+        </div>
+      ) : (
+        Conteudo
+      )}
     </section>
   </>
   )

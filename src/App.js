@@ -1,4 +1,4 @@
-import { useState, createContext } from 'react';
+import { useState } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import Content from './Components/content';
 import Details from './Components/Details';
@@ -11,17 +11,14 @@ function App() {
   const toggleDarkMode = (x) => {
     setIsDarkMode(x);
   };
-  const DarkModeContext = createContext(isDarkMode);
   return (
-    <DarkModeContext.Provider value={isDarkMode}>
+    <HashRouter>
       <HdrBar fun={(a)=>{toggleDarkMode(a)}} valIsDarkMode={isDarkMode} />
-      <HashRouter>
-        <Routes>
-          <Route path="/" element={<Content valIsDarkMode={isDarkMode} />} />
-          <Route path=':Name' element={<Details valIsDarkMode={isDarkMode} />} />
-        </Routes>
-      </HashRouter>
-    </DarkModeContext.Provider>
+      <Routes>
+        <Route path="/" element={<Content valIsDarkMode={isDarkMode} />} />
+        <Route path='/:Name' element={<Details valIsDarkMode={isDarkMode} />} />
+      </Routes>
+    </HashRouter>
   );
 }
 

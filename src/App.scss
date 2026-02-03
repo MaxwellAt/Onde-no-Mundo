@@ -1,13 +1,32 @@
 @charset "utf-8";
 @import "../node_modules/bulma/bulma.sass";
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600;800&display=swap');
-@import "../node_modules/bootstrap/scss/bootstrap.scss";
 
-// // Default variable overrides
-$success:grey;
-$tag-delete-margin:0px;
-$primary:hsl(200, 15%, 8%);
-$secondary:hsl(0, 0%, 98%);
+// Default variable overrides (Bootstrap)
+$success: grey;
+$tag-delete-margin: 0px;
+$primary: hsl(200, 15%, 8%);
+$secondary: hsl(0, 0%, 98%);
+
+// Remove SVG data-URIs que geram warnings do postcss-svgo
+// (não impacta o app, pois esses inputs/ícones não são usados aqui)
+$form-check-input-checked-bg-image: none;
+$form-check-radio-checked-bg-image: none;
+$form-check-input-indeterminate-bg-image: none;
+$form-switch-bg-image: none;
+$form-switch-focus-bg-image: none;
+$form-switch-checked-bg-image: none;
+$form-feedback-icon-valid: none;
+$form-feedback-icon-invalid: none;
+
+// Ícones de componentes que também usam SVG em data-URI (evita warnings no build)
+$btn-close-bg: none;
+$accordion-button-icon: none;
+$accordion-button-active-icon: none;
+$carousel-control-prev-icon-bg: none;
+$carousel-control-next-icon-bg: none;
+
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
 
 :root{
     --color-text:hsl(200, 15%, 8%);

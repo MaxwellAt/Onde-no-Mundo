@@ -3,36 +3,37 @@ import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { NavLink } from "react-router-dom";
+import { useCountries } from "../hooks/useCountries";
+import { findCountryByName } from "../services/countriesIngestion";
 
 export default function Details({valIsDarkMode}) {
 
     const { Name } = useParams();
+    const decodedName = (() => {
+        try {
+            return decodeURIComponent(Name || "");
+        } catch {
+            return Name || "";
+        }
+    })();
+
+    const { countries, loading, error } = useCountries();
     
-    const [data, setData] = useState([]);
-    const [ languages, setLang ] = useState("");
-    const [flag, setFlag] = useState([]);
-    const [currencies, setCurrencies] = useState([])
-    const [borders, setBorders] = useState()
+    const [data, setData] = useState(null);
+    const [ languages, setLang ] = useState([]);
+    const [flag, setFlag] = useState("");
+    const [currencies, setCurrencies] = useState("")
+    const [borders, setBorders] = useState([])
 
     useEffect(() => {
-        fetch("./data.json")
-            .then(resp => resp.json())
-            .then(resp => {
-                const data = resp.filter(country => country.name === Name);
-                setData(data[0]);
-                // a partir de data pegue todas as langs e armazene em languages
-                const langs = data[0].languages.map(lang => lang.name);
-                setLang(langs);
-                // pegue a flag e armazene em flag
-                const flag = data[0].flag;
-                setFlag(flag);
-                const currencies = data[0].currencies.map(lang => lang.code);
-                setCurrencies(currencies[0]);
-                const borders = data[0].borders.map(x=>{return <div className="btn btn-light" key={x.key}>{x}</div> })
-                setBorders(borders);
-            })
-
-    }, [Name]);
+        if (loading || error) return;
+        const country = findCountryByName(countries, decodedName);
+        setData(country);
+        setLang(country?.languages || []);
+        setFlag(country?.flags?.svg || country?.flags?.png || "");
+        setCurrencies(country?.currenciesCode || "");
+        setBorders(country?.borders || []);
+    }, [countries, decodedName, loading, error]);
 
     const backButton = (
         <NavLink className={`button is-${valIsDarkMode ? "dark" : "light"}`} to={`/`}>
@@ -46,32 +47,38 @@ export default function Details({valIsDarkMode}) {
 
     const infos = (
         <div className="my-table">
-            <h1><strong>{Name}</strong></h1>
+            <h1><strong>{decodedName}</strong></h1>
             <table >
 
                 <tr>
-                    <td><strong>Native Name: </strong>{data.nativeName}</td>
-                    <td><strong>Top Level Domain: </strong>{data.topLevelDomain}</td>
+                    <td><strong>Native Name: </strong>{data?.nativeName || "-"}</td>
+                    <td><strong>Top Level Domain: </strong>{(data?.topLevelDomain || []).join(", ") || "-"}</td>
                 </tr>
                 <br />
                 <tr>
-                    <td><strong>Population: </strong>{parseInt(data.population).toLocaleString('pt-BR', { useGrouping: true })}</td>
-                    <td><strong>Currencies: </strong>{currencies}</td>
+                    <td><strong>Population: </strong>{(data?.population || 0).toLocaleString('pt-BR', { useGrouping: true })}</td>
+                    <td><strong>Currencies: </strong>{currencies || "-"}</td>
                 </tr>
                 <br />
                 <tr>
-                    <td><strong>Region: </strong>{data.region}</td>
-                    <td><strong>Languages: </strong>{languages + ''}</td>
+                    <td><strong>Region: </strong>{data?.region || "-"}</td>
+                    <td><strong>Languages: </strong>{languages.length ? languages.join(", ") : "-"}</td>
                 </tr>
                 <br />
                 <tr>
-                    <td><strong>Capital: </strong>{data.capital}</td>
+                    <td><strong>Capital: </strong>{data?.capital || "-"}</td>
                 </tr>
                 <br />
             </table>
             <footer>
                 <strong>Border Countries: </strong>
-                {borders}
+                {borders.length
+                    ? borders.map((code) => (
+                        <div className={`btn btn-${valIsDarkMode ? "dark" : "light"} m-1`} key={code}>
+                            {code}
+                        </div>
+                    ))
+                    : "-"}
             </footer>
         </div>
         
@@ -83,11 +90,25 @@ export default function Details({valIsDarkMode}) {
             <div style={{padding:"9vw 10vw"}}>
                 <div>{backButton}</div>
                 <br />
-                <div style={{ display: 'flex', justifyContent: 'space-between',flexFlow:'wrap' }}>
-                    <img width='600vw' src={flag} alt='flag' />
-                    <br />
-                    {infos}
-                </div>
+                {loading ? (
+                    <div className={`text-${valIsDarkMode ? "white" : "black"}`}>
+                        Carregando detalhes…
+                    </div>
+                ) : error ? (
+                    <div className={`text-${valIsDarkMode ? "white" : "black"}`}>
+                        Não foi possível carregar os detalhes.
+                    </div>
+                ) : !data ? (
+                    <div className={`text-${valIsDarkMode ? "white" : "black"}`}>
+                        País não encontrado.
+                    </div>
+                ) : (
+                    <div style={{ display: 'flex', justifyContent: 'space-between',flexFlow:'wrap' }}>
+                        <img width='600vw' src={flag} alt='flag' />
+                        <br />
+                        {infos}
+                    </div>
+                )}
             </div>
         </>
     )

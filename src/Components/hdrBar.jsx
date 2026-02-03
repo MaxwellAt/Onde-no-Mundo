@@ -2,6 +2,7 @@ import React,{ useState} from 'react';
 import { Navbar, NavbarBrand } from "reactstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 
 export default function HdrBar({fun,valIsDarkMode}) {
 
@@ -21,14 +22,14 @@ export default function HdrBar({fun,valIsDarkMode}) {
     };
     return (
         <Navbar color={isDarkMode ? "dark" : "light"} light expand="md">
-            <NavbarBrand color={isDarkMode ? "dark" : "light"}>
-                <a href="/"><strong>Where in the world?</strong></a>
+            <NavbarBrand tag={Link} to="/" color={isDarkMode ? "dark" : "light"}>
+                <strong>Where in the world?</strong>
             </NavbarBrand>
             <button onClick={toggleDarkMode} className={`button is-small is-${isDarkMode ? "dark" : "light"}`}>
                 <span className="icon">
                     <FontAwesomeIcon icon={isDarkMode ? faSun : faMoon} />
                 </span>
-                <span>{isDarkMode ? "Ligth Mode" : "Dark Mode"}</span>
+                <span>{isDarkMode ? "Light Mode" : "Dark Mode"}</span>
             </button>
         </Navbar>
     )
